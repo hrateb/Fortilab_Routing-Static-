@@ -1,0 +1,42 @@
+**Port Configuration:**
+config system interface
+    edit "port1"
+        set mode static
+        set ip 10.200.1.1 255.255.255.0
+        set allowaccess ping https ssh
+    next
+    edit "port2"
+        set mode static
+        set ip 10.200.2.1 255.255.255.0
+        set allowaccess ping https ssh
+    next
+end
+**Default Routes:**
+config router static
+    edit 1
+        set dst 0.0.0.0 0.0.0.0
+        set gateway <ISP1-next-hop-IP>
+        set device "port1"
+        set distance 10
+    next
+    edit 2
+        set dst 0.0.0.0 0.0.0.0
+        set gateway <ISP2-next-hop-IP>
+        set device "port2"
+        set distance 20
+    next
+end
+**Testing the Failover:**
+- Disable port1:
+  config system interface
+      edit "port1"
+          set status down
+      next
+  end
+
+- Re-enable port1:
+  config system interface
+      edit "port1"
+          set status up
+      next
+  end
